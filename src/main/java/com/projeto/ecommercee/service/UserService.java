@@ -4,23 +4,34 @@ package com.projeto.ecommercee.service;
 import com.projeto.ecommercee.dto.user.AddressCreateDTO;
 import com.projeto.ecommercee.dto.user.UserCreateDTO;
 import com.projeto.ecommercee.entity.Address;
+import com.projeto.ecommercee.entity.Role;
 import com.projeto.ecommercee.entity.User;
 import com.projeto.ecommercee.exception.UserAlreadyExistsException;
 import com.projeto.ecommercee.exception.UsernameNotExistsException;
+import com.projeto.ecommercee.repository.RoleRepository;
 import com.projeto.ecommercee.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+
+import static com.projeto.ecommercee.entity.Role.Values.BASIC;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder encoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public User save(User user){
         return userRepository.save(user);
@@ -42,7 +53,12 @@ public class UserService {
         if (userExist) {
             throw new UserAlreadyExistsException();
         }
-        User user = new User(userDTO);
+
+        var role = roleRepository.findByName(BASIC.name()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        User user = new User(userDTO, encoder.encode(userDTO.password()));
+        user.setRoles(Set.of(role));
+        System.out.println(user.getRoles());
         return userRepository.save(user);
     }
 

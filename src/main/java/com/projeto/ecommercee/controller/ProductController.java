@@ -32,7 +32,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProducts().stream().map(ProductResponseDTO::new).toList());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestBody @Validated ProductCreateDto productDto) {
         Product createdProduct = productService.createProduct(productDto);
         String location = "/products/" + createdProduct.getId();
@@ -53,9 +53,5 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/category")
-    public ResponseEntity<List<CategoryResponseDTO>> listCategory(){
-        List<Category> categories = categoryService.findAll();
-        return ResponseEntity.ok(categories.stream().map(CategoryResponseDTO::new).toList());
-    }
+
  }

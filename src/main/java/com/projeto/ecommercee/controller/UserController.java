@@ -26,7 +26,7 @@ public class UserController {
         return ResponseEntity.ok(new UserResponseDTO(user));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Validated UserCreateDTO data) {
         var createdUser = userService.createUser(data);
         String url = "/user/" + createdUser.getId().toString();

@@ -51,10 +51,10 @@ public class User {
     public User() {
     }
 
-    public User(UserCreateDTO userDTO) {
+    public User(UserCreateDTO userDTO, String encryptedPassword) {
         this.username = userDTO.username();
         this.email = userDTO.email();
-        this.password = userDTO.password();
+        this.password = encryptedPassword;
         this.phone = userDTO.phone();
     }
 

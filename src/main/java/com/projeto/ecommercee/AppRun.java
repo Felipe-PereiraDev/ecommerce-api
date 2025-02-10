@@ -7,6 +7,8 @@ import com.projeto.ecommercee.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -20,6 +22,8 @@ public class AppRun implements CommandLineRunner {
     private RoleRepository roleRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     @Transactional
@@ -42,7 +46,7 @@ public class AppRun implements CommandLineRunner {
                     .orElse(null);
 
             admin.setUsername("admin");
-            admin.setPassword("admin");
+            admin.setPassword(encoder.encode("admin"));
             admin.setEmail("admin@gmail.com");
             Set<Role> roles = new HashSet<>();
             roles.add(roleAdmin);
