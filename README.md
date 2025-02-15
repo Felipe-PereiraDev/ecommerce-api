@@ -26,6 +26,7 @@ Esta API permite gerenciar usuários, produtos, categorias e pedidos de um siste
 A API utiliza Spring Security junto com a dependência `spring-boot-starter-oauth2-resource-server` para 
 gerenciar a autenticação via JWT (JSON Web Token). A autenticação é realizada através 
 de um token JWT, que deve ser enviado no cabeçalho das requisições.
+
 ---
 
 ## Controle de Acesso por Roles 
