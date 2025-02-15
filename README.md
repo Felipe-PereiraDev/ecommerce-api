@@ -7,7 +7,7 @@ Esta API permite gerenciar usuários, produtos, categorias e pedidos de um siste
 - [Spring Boot](https://spring.io/projects/spring-boot)
 - [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
 - [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-- [Banco de dados MYSQL](https://www.mysql.com/)
+- [Banco de dados PostgreSQL](https://www.postgresql.org/)
 
 ---
 ## Práticas adotadas
@@ -16,12 +16,64 @@ Esta API permite gerenciar usuários, produtos, categorias e pedidos de um siste
 - API REST
 - Consultas com Spring Data JPA
 - Injeção de Dependências
-<!-- - Tratamento de respostas de erro
+- Uso de exceptions personalizadas para respostas padronizadas e claras.
 - Geração automática do Swagger com a OpenAPI 3
-- Teste Unitários com o framework JUnit 5, com o suporte do Mockito para simulação de dependências -->
+
+[//]: # (- Teste Unitários com o framework JUnit 5, com o suporte do Mockito para simulação de dependências)
 
 ---
+## Autenticação e Autorização
+A API utiliza Spring Security junto com a dependência `spring-boot-starter-oauth2-resource-server` para 
+gerenciar a autenticação via JWT (JSON Web Token). A autenticação é realizada através 
+de um token JWT, que deve ser enviado no cabeçalho das requisições.
+---
+
+## Controle de Acesso por Roles 
+Os usuários são categorizados com diferentes Roles:
+- `BASIC`: pode acessar apenas endpoints essenciais, como consulta de produtos e criação de pedidos.
+- `ADMIN`: tem acesso a operações administrativas, como gestão de produtos, categorias e usuários.
+
+### Exemplo de configuração de segurança no Spring Security:
+```java
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  return http
+          .csrf(csrf -> csrf.disable())
+          .authorizeHttpRequests(auth -> auth
+                  .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
+                  .requestMatchers(HttpMethod.POST, "/auth").permitAll()
+                  .requestMatchers(HttpMethod.POST, "/products/create").hasAuthority("SCOPE_" + ADMIN.name())
+                  .requestMatchers(HttpMethod.POST, "/category").hasAuthority("SCOPE_" + ADMIN.name())
+                  .anyRequest().authenticated())
+          .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+          .httpBasic(httpBasic -> httpBasic.disable())
+          .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+          .build();
+}
+
+```
+
+---
+
 ## Endpoints
+
+### Autenticação
+- **Método:** `POST /auth`
+- **Descrição:** Para fazer o login
+- **Request Body:**
+  ```json
+  {
+    "username": "admin",
+    "password": "admin"
+  }
+- **Response**: `200 ok`.
+  ```json
+   {
+      "token": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzcHJpbmctc2VjdXJpdHktand0Iiwic3ViIjoiYWRtaW4iLCJleHAiOjE3Mzk1ODI2MjksImlhdCI6MTczOTU3OTAyOSwic2NvcGUiOiJBRE1JTiBCQVNJQyJ9.byRkq4fgJagUdUjp3dPT9UuwI1SYaDcW8CH65dmLD67FV0C6Up3eNxyQCGEOxDwtLvfwg7KGYLX3yySGj-f7U21qAzwcKaTr1IRepxiP9kg-d3EotwcEcT4kwyMdvHIlgStPsEuSzX58TS3YXzBgs06YJxG2dM-wQ2mJ-9rrYsWsxt07YZySwCj-HPaPzPjHsZEwDgw_NtmMuqA8t7EXsg9wolIh7y_sJWN4q1YeP7KJyMfBzZAKXdVph-66yvHzCN6yJtah0CmC2bYQ1JMl8CyiGkaXQZ7Xaa-89cWu9LFS3ZIrZvnFq6tozHqk-Wj2N4mx88GaeZsohMBimZrzSg"
+   }
+  ```
+
+---
 
 ### 1. Usuários (`/user`)
 
