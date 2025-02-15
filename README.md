@@ -43,10 +43,37 @@ Esta API permite gerenciar usuários, produtos, categorias e pedidos de um siste
 - **Response:**
   ```json
   {
-    "id": "1",
-    "username": "john_doe",
-    "email": "john@example.com"
-  }
+  "userId": "25fcd6c2-69c4-48d4-9a30-7675a2682075",
+  "username": "mario",
+  "email": "mario@gmail.com",
+  "roles": [
+    {
+      "id": 2,
+      "name": "BASIC"
+    }
+  ],
+  "address": {
+     "state": "Amazonas",
+     "city": "Manaus",
+     "street": "3"
+  },
+  "phone": "9002-8922",
+  "orders": [
+    {
+      "orderId": "4ada1c41-c3e2-41d0-9f86-068344ae9372",
+      "orderDate": "2025-02-14T20:22:55.507964",
+      "totalAmount": 26980.0,
+      "status": "PENDING"
+    },
+    {
+      "orderId": "da39f35d-aa2a-4fd0-b904-fc6e79a0f6d3",
+      "orderDate": "2025-02-11T05:31:57.000048",
+      "totalAmount": 19990.0,
+      "status": "PENDING"
+    }
+  ]
+}
+  
 ### Adicionar Endereço
 - **Método:** `POST /user/{username}/address`
 - **Descrição:** Adiciona um endereço ao usuário.
@@ -55,8 +82,7 @@ Esta API permite gerenciar usuários, produtos, categorias e pedidos de um siste
   {
     "street": "Rua das Flores",
     "city": "São Paulo",
-    "state": "SP",
-    "zipcode": "12345-678"
+    "state": "SP"
   }
 - **Status Http**: `200 ok`
 ---

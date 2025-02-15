@@ -1,11 +1,17 @@
 package com.projeto.ecommercee.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "order_products")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderProduct {
     @EmbeddedId
     private OrderProductId id;
@@ -22,45 +28,6 @@ public class OrderProduct {
 
     @Column(nullable = false)
     private Long quantity;
-
-    public OrderProduct(OrderProductId id, Product product, Order order, Long quantity) {
-        this.id = id;
-        this.product = product;
-        this.order = order;
-        this.quantity = quantity;
-    }
-
-    public OrderProduct(Product product, Order order, Long quantity) {
-        this.product = product;
-        this.order = order;
-        this.quantity = quantity;
-    }
-    public OrderProduct() {
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Long quantity) {
-        this.quantity = quantity;
-    }
 
     @Override
     public boolean equals(Object o) {
