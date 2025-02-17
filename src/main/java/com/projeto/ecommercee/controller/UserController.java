@@ -10,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Comparator;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -24,6 +26,14 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable("id") String id) {
         User user = userService.findById(id);
         return ResponseEntity.ok(new UserResponseDTO(user));
+    }
+
+
+    @GetMapping()
+    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
+        List<UserResponseDTO> users  = userService.findAll().stream()
+                .map(UserResponseDTO::new).sorted(Comparator.comparing(UserResponseDTO::username)).toList();
+        return ResponseEntity.ok(users);
     }
 
     @PostMapping("/register")

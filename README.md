@@ -271,4 +271,9 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 	  "status": "PENDING"
     }
 
+---
+
+# Todos os Endpoints
+
+!["imagem swagger - openAPI ](src/image/img.png)
 

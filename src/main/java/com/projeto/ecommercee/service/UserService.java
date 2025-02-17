@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -73,5 +74,7 @@ public class UserService {
     }
 
 
-
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 }
