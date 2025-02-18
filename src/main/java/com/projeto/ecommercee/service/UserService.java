@@ -6,6 +6,7 @@ import com.projeto.ecommercee.dto.user.UserCreateDTO;
 import com.projeto.ecommercee.entity.Address;
 import com.projeto.ecommercee.entity.Role;
 import com.projeto.ecommercee.entity.User;
+import com.projeto.ecommercee.exception.InsufficientStockException;
 import com.projeto.ecommercee.exception.UserAlreadyExistsException;
 import com.projeto.ecommercee.exception.UsernameNotExistsException;
 import com.projeto.ecommercee.repository.RoleRepository;
@@ -45,7 +46,7 @@ public class UserService {
 
     public User findByUsername(String username) {
        return userRepository.findByUsername(username).orElseThrow(
-               () -> new UsernameNotExistsException()
+               UsernameNotExistsException::new
        );
     }
 
@@ -59,7 +60,7 @@ public class UserService {
 
         User user = new User(userDTO, encoder.encode(userDTO.password()));
         user.setRoles(Set.of(role));
-        System.out.println(user.getRoles());
+//        System.out.println(user.getRoles());
         return userRepository.save(user);
     }
 
