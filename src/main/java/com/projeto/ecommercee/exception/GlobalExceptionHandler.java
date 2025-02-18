@@ -17,64 +17,40 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MissingAddressException.class)
     public ResponseEntity<Map<String, Object>> handleMissingAddressException(MissingAddressException ex,
                                                                              HttpServletRequest request) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "Bad Request");
-        response.put("message", ex.getMessage());
-        response.put("path", request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return builderResponseException(HttpStatus.BAD_REQUEST, "Bad Request", ex, request);
     }
 
     @ExceptionHandler(ProductAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleProductAlreadyExistsException(ProductAlreadyExistsException ex) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.CONFLICT.value());
-        response.put("error", "Conflict");
-        response.put("message", ex.getMessage());
-        response.put("path", "/products");
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    public ResponseEntity<Map<String, Object>> handleProductAlreadyExistsException(ProductAlreadyExistsException ex,
+                                                                                   HttpServletRequest request) {
+        return builderResponseException(HttpStatus.CONFLICT, "Conflict", ex, request);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.CONFLICT.value());
-        response.put("error", "Conflict");
-        response.put("message", ex.getMessage());
-        response.put("path", "/user");
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsException ex,
+                                                                                HttpServletRequest request) {
+        return builderResponseException(HttpStatus.CONFLICT, "Conflict", ex, request);
     }
 
 
     @ExceptionHandler(UsernameNotExistsException.class)
     public ResponseEntity<Map<String, Object>> handleUsernameNotExistsException(UsernameNotExistsException ex,
                                                                                 HttpServletRequest request) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.NOT_FOUND.value());
-        response.put("error", "Not Found");
-        response.put("message", ex.getMessage());
-        response.put("path", request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return builderResponseException(HttpStatus.NOT_FOUND, "Not Found", ex, request);
     }
 
     @ExceptionHandler(InsufficientStockException.class)
-    public ResponseEntity<Map<String, Object>> handleInsufficientStockException(InsufficientStockException ex,
-                                                                                HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> handleInsufficientStockException(InsufficientStockException ex, HttpServletRequest request) {
+        return builderResponseException(HttpStatus.CONFLICT, "Conflict", ex, request);
+    }
+
+    public ResponseEntity<Map<String, Object>> builderResponseException(HttpStatus status, String error, Exception ex, HttpServletRequest request) {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.CONFLICT.value());
-        response.put("error", "Conflict");
+        response.put("status", status.value());
+        response.put("error", error);
         response.put("message", ex.getMessage());
         response.put("path", request.getRequestURI());
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(status).body(response);
     }
 }

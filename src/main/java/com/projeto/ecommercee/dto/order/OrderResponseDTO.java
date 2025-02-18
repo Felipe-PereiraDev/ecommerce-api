@@ -8,7 +8,7 @@ import java.util.List;
 
 public record OrderResponseDTO(
         String username,
-        String orderId,
+        Long orderId,
         LocalDateTime orderDate,
         List<OrderProductResponse> productsProcessed,
         Double totalAmount,
@@ -17,7 +17,7 @@ public record OrderResponseDTO(
     public OrderResponseDTO(Order order, List<OrderProductResponse> responseProducts) {
         this(
                 order.getUser().getUsername(),
-                order.getId().toString(),
+                order.getId(),
                 order.getOrderDate(),
                 responseProducts,
                 order.getTotalAmount(),

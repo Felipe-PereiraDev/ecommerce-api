@@ -9,6 +9,7 @@ import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.entity.Product;
 import com.projeto.ecommercee.service.CategoryService;
 import com.projeto.ecommercee.service.ProductService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDTO>> listProducts() {
-        return ResponseEntity.ok(productService.getProducts().stream().map(ProductResponseDTO::new).toList());
+    public ResponseEntity<Page<ProductResponseDTO>> listProducts(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                 @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                 @RequestParam(value = "sort", defaultValue = "name") String sort) {
+        return ResponseEntity.ok(productService.getProducts(page, size, sort));
     }
 
     @PostMapping("/create")

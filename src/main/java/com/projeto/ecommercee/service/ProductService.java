@@ -1,18 +1,27 @@
 package com.projeto.ecommercee.service;
 
 import com.projeto.ecommercee.dto.product.ProductCreateDto;
+import com.projeto.ecommercee.dto.product.ProductResponseDTO;
 import com.projeto.ecommercee.dto.product.ProductUpdateDTO;
 import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.entity.Product;
 import com.projeto.ecommercee.exception.ProductAlreadyExistsException;
 import com.projeto.ecommercee.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.data.util.Optionals;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
-import java.util.List;
+import java.util.Optional;
+
+import static java.util.Objects.isNull;
 
 @Service
 public class ProductService {
@@ -40,8 +49,13 @@ public class ProductService {
         return productRepository.save(newProduct);
     }
 
-    public List<Product> getProducts() {
-        return productRepository.findAll().stream().sorted(Comparator.comparing(Product::getName)).toList();
+    public Page<ProductResponseDTO> getProducts(int page, int size, String sort) {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+            return productRepository.findAll(pageable).map(ProductResponseDTO::new);
+        } catch (PropertyReferenceException | IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     public void deleteById(Long id) {

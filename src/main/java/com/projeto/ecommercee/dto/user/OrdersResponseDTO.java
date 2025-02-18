@@ -5,14 +5,14 @@ import com.projeto.ecommercee.entity.Order;
 import java.time.LocalDateTime;
 
 public record OrdersResponseDTO(
-        String orderId,
+        Long orderId,
         LocalDateTime orderDate,
         Double totalAmount,
         String status
 ) {
     public OrdersResponseDTO(Order order){
         this(
-                order.getId().toString(),
+                order.getId(),
                 order.getOrderDate(),
                 order.getTotalAmount(),
                 order.getStatus().toString()

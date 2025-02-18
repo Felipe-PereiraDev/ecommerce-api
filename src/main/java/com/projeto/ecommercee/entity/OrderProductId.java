@@ -8,22 +8,22 @@ import java.util.UUID;
 
 @Embeddable
 public class OrderProductId {
-    private UUID orderId;
+    private Long orderId;
     private Long productId;
 
     public OrderProductId() {
     }
 
-    public OrderProductId(UUID orderId, Long productId) {
+    public OrderProductId(Long orderId, Long productId) {
         this.orderId = orderId;
         this.productId = productId;
     }
 
-    public UUID getOrderId() {
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(UUID orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 

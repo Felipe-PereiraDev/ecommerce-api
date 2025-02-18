@@ -18,13 +18,15 @@ import static com.projeto.ecommercee.entity.Role.Values.*;
 
 @Component
 public class AppRun implements CommandLineRunner {
-    @Autowired
-    private RoleRepository roleRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder encoder;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
+    public AppRun(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder encoder) {
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+    }
     @Override
     @Transactional
     public void run(String... args) throws Exception {
