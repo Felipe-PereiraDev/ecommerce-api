@@ -1,6 +1,7 @@
 package com.projeto.ecommercee.service;
 
 
+import com.projeto.ecommercee.dto.ViaCepDTO;
 import com.projeto.ecommercee.dto.user.AddressCreateDTO;
 import com.projeto.ecommercee.dto.user.UserCreateDTO;
 import com.projeto.ecommercee.entity.Address;
@@ -11,6 +12,8 @@ import com.projeto.ecommercee.exception.UserAlreadyExistsException;
 import com.projeto.ecommercee.exception.UsernameNotExistsException;
 import com.projeto.ecommercee.repository.RoleRepository;
 import com.projeto.ecommercee.repository.UserRepository;
+import com.projeto.ecommercee.repository.ViaCepService;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,12 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.projeto.ecommercee.entity.Role.Values.BASIC;
+import static java.util.Objects.isNull;
 
 @Service
 public class UserService {
@@ -33,6 +34,8 @@ public class UserService {
     private PasswordEncoder encoder;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private ViaCepService viaCepService;
 
 
     public User save(User user){
@@ -65,13 +68,17 @@ public class UserService {
     }
 
     public void addAddress(String username, AddressCreateDTO addressDTO){
-        Address address = new Address(addressDTO);
-
         User user = findByUsername(username);
 
-        user.setAddress(address);
+        try {
+            ViaCepDTO viaCepDTO = viaCepService.getAddress(addressDTO.zipCode().replace("-", ""));
+            Address address = new Address(viaCepDTO, addressDTO.street());
+            user.setAddress(address);
+            userRepository.save(user);
+        } catch (FeignException.BadRequest e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Zip Code not found");
+        }
 
-        userRepository.save(user);
     }
 
 
