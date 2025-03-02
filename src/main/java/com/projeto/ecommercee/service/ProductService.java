@@ -13,15 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
-import org.springframework.data.util.Optionals;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Comparator;
-import java.util.Optional;
-
-import static java.util.Objects.isNull;
 
 @Service
 public class ProductService {
@@ -49,9 +44,12 @@ public class ProductService {
         return productRepository.save(newProduct);
     }
 
-    public Page<ProductResponseDTO> getProducts(int page, int size, String sort) {
+    public Page<ProductResponseDTO> getProducts(int page, int size, String sort, String category) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+            if (StringUtils.hasText(category)) {
+                 return productRepository.findByCategory_NameIgnoreCase(category, pageable).map(ProductResponseDTO::new);
+            }
             return productRepository.findAll(pageable).map(ProductResponseDTO::new);
         } catch (PropertyReferenceException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     public ResponseEntity<Map<String, Object>> builderResponseException(HttpStatus status, String error, Exception ex, HttpServletRequest request) {
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("timestamp", LocalDateTime.now());
+        response.put("timestamp", LocalDateTime.now().toString());
         response.put("status", status.value());
         response.put("error", error);
         response.put("message", ex.getMessage());
@@ -54,3 +54,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(response);
     }
 }
+ 

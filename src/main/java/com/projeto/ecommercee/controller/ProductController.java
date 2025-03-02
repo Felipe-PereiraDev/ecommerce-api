@@ -31,8 +31,9 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductResponseDTO>> listProducts(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                  @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                 @RequestParam(value = "sort", defaultValue = "name") String sort) {
-        return ResponseEntity.ok(productService.getProducts(page, size, sort));
+                                                                 @RequestParam(value = "sort", defaultValue = "name") String sort,
+                                                                 @RequestParam(value = "category", required = false) String category) {
+        return ResponseEntity.ok(productService.getProducts(page, size, sort, category));
     }
 
     @PostMapping("/create")
