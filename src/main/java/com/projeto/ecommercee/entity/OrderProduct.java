@@ -5,13 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
 @Table(name = "order_products")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class OrderProduct {
     @EmbeddedId
     private OrderProductId id;
@@ -28,6 +28,15 @@ public class OrderProduct {
 
     @Column(nullable = false)
     private Long quantity;
+
+    public OrderProduct(OrderProductId orderProductId, Product product, Order order, Long quantity) {
+        this.id = orderProductId;
+        this.product = product;
+        this.order = order;
+        this.quantity = quantity;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {

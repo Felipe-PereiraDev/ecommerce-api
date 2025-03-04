@@ -30,7 +30,7 @@ public class CategoryService {
     }
 
     public Category createCategory(CategoryCreateDTO data) {
-        Category category = new Category(null, data.name(), data.description(), null);
+        Category category = new Category(data.name(), data.description());
         return categoryRepository.save(category);
     }
 }

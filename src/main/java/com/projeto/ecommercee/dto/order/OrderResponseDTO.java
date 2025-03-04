@@ -9,7 +9,7 @@ import java.util.List;
 public record OrderResponseDTO(
         String username,
         Long orderId,
-        LocalDateTime orderDate,
+        String orderDate,
         List<OrderProductResponse> productsProcessed,
         Double totalAmount,
         String status
@@ -18,7 +18,7 @@ public record OrderResponseDTO(
         this(
                 order.getUser().getUsername(),
                 order.getId(),
-                order.getOrderDate(),
+                order.getOrderDate().toString(),
                 responseProducts,
                 order.getTotalAmount(),
                 order.getStatus().toString()

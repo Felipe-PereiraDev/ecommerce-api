@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
         response.put("error", error);
         response.put("message", ex.getMessage());
         response.put("path", request.getRequestURI());
-        return ResponseEntity.status(status).body(response);
+            return ResponseEntity.status(status).body(response);
     }
 }
  

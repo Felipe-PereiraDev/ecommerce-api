@@ -14,6 +14,7 @@ import com.projeto.ecommercee.repository.RoleRepository;
 import com.projeto.ecommercee.repository.UserRepository;
 import com.projeto.ecommercee.repository.ViaCepService;
 import feign.FeignException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,6 +54,7 @@ public class UserService {
        );
     }
 
+    @Transactional
     public User createUser(UserCreateDTO userDTO){
         boolean userExist = userRepository.existsByUsername(userDTO.username()) || userRepository.existsByEmail(userDTO.email());
         if (userExist) {
@@ -63,7 +65,6 @@ public class UserService {
 
         User user = new User(userDTO, encoder.encode(userDTO.password()));
         user.setRoles(Set.of(role));
-//        System.out.println(user.getRoles());
         return userRepository.save(user);
     }
 
@@ -82,6 +83,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public List<User> findAll() {
         return userRepository.findAll();
     }
