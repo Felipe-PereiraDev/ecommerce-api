@@ -1,6 +1,6 @@
 package com.projeto.ecommercee.dto.product;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
-public record CategoryCreateDTO(@NotNull String name, @NotNull String description){
+public record CategoryCreateDTO(@NotBlank String name, @NotBlank String description){
 }
