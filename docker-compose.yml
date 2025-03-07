@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: 'postgres:13'
+    environment:
+      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_PASSWORD=102030'
+      - 'POSTGRES_DB=ecommerce'
+    ports:
+      - '5433:5432'
+    labels:
+      org.springframework.boot.jdbc.parameters: 'ssl=true&sslmode=require'
