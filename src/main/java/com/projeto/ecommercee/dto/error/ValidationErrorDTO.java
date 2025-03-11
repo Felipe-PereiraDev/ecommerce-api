@@ -1,4 +1,4 @@
-package com.projeto.ecommercee.dto;
+package com.projeto.ecommercee.dto.error;
 
 public record ValidationErrorDTO(String field, String message) {
 }

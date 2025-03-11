@@ -4,8 +4,10 @@ import com.projeto.ecommercee.dto.user.AddressCreateDTO;
 import com.projeto.ecommercee.dto.user.UserCreateDTO;
 import com.projeto.ecommercee.dto.user.UserResponseDTO;
 import com.projeto.ecommercee.entity.User;
+import com.projeto.ecommercee.service.AuthenticationService;
 import com.projeto.ecommercee.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,18 +16,22 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationService authenticationService) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("@authenticationService.hasAccessPermission(#id)")
     public ResponseEntity<UserResponseDTO> getUser(@PathVariable("id") String id) {
         User user = userService.findById(id);
         return ResponseEntity.ok(new UserResponseDTO(user));
+
     }
 
 

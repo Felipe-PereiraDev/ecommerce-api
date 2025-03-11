@@ -4,6 +4,7 @@ import com.projeto.ecommercee.dto.user.UserCreateDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
@@ -19,10 +20,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 30)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 80)
     private String email;
 
     @Column(nullable = false)
@@ -32,6 +33,7 @@ public class User {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @Column(length = 15, nullable = false)
     private String phone;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

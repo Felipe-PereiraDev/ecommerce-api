@@ -3,6 +3,7 @@ package com.projeto.ecommercee.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Table(name = "orders")
 @Data
 @AllArgsConstructor
+@ToString
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

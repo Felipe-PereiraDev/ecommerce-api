@@ -9,7 +9,8 @@ VALUES
     ('Furniture', 'Indoor and outdoor furniture for home and office', CURRENT_TIMESTAMP),
     ('Beauty & Personal Care', 'Products for personal hygiene and cosmetics', CURRENT_TIMESTAMP),
     ('Food & Beverages', 'Groceries, snacks, and beverages', CURRENT_TIMESTAMP),
-    ('Health & Wellness', 'Supplements, fitness products, and health-related items', CURRENT_TIMESTAMP);
+    ('Health & Wellness', 'Supplements, fitness products, and health-related items', CURRENT_TIMESTAMP)
+ON CONFLICT (name) DO NOTHING;
 
 
 INSERT INTO products (name, description, price, stock_quantity, category_id, created_at) VALUES
@@ -32,4 +33,6 @@ INSERT INTO products (name, description, price, stock_quantity, category_id, cre
 ('Câmera de Segurança Intelbras 4K', 'Câmera de segurança Intelbras com imagem 4K e visão noturna', 1199.00, 20, 5, CURRENT_TIMESTAMP),
 ('Smartwatch Amazfit GTR 3', 'Smartwatch com tela AMOLED, monitoramento de saúde e GPS integrado', 1499.00, 40, 7, CURRENT_TIMESTAMP),
 ('Conjunto de Panelas Tramontina 5 Peças', 'Conjunto de panelas Tramontina com 5 peças, em aço inox', 349.00, 60, 8, CURRENT_TIMESTAMP),
-('Impressora HP DeskJet 2710', 'Impressora multifuncional com Wi-Fi e compatível com cartuchos de tinta HP', 299.00, 70, 9, CURRENT_TIMESTAMP);
+('Impressora HP DeskJet 2710', 'Impressora multifuncional com Wi-Fi e compatível com cartuchos de tinta HP', 299.00, 70, 9, CURRENT_TIMESTAMP)
+ON CONFLICT (name) DO NOTHING;
+

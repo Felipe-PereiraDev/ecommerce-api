@@ -45,7 +45,7 @@ public class UserService {
 
     public User findById(String uuid) {
         return userRepository.findById(UUID.fromString(uuid))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário com id %s não encontrado.".formatted(uuid.toString())));
     }
 
     public User findByUsername(String username) {
@@ -63,7 +63,7 @@ public class UserService {
 
         var role = roleRepository.findByName(BASIC.name()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        User user = new User(userDTO, encoder.encode(userDTO.password()));
+        User user = new User(userDTO, encoder.encode(userDTO.password().trim()));
         user.setRoles(Set.of(role));
         return userRepository.save(user);
     }

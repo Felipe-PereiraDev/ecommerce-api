@@ -5,16 +5,15 @@ import com.projeto.ecommercee.entity.User;
 import com.projeto.ecommercee.repository.RoleRepository;
 import com.projeto.ecommercee.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.projeto.ecommercee.entity.Role.Values.*;
+import static com.projeto.ecommercee.entity.Role.Values.ADMIN;
+import static com.projeto.ecommercee.entity.Role.Values.BASIC;
 
 @Component
 public class AppRun implements CommandLineRunner {

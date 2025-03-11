@@ -36,7 +36,13 @@ public class OrderProduct {
         this.quantity = quantity;
     }
 
+    public void addQuantity(Long quantity) {
+        this.quantity += quantity;
+    }
 
+    public OrderProduct(OrderProductId id) {
+        this.id = id;
+    }
 
     @Override
     public boolean equals(Object o) {

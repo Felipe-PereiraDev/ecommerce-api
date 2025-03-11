@@ -1,11 +1,9 @@
 package com.projeto.ecommercee.controller;
 
 
-import com.projeto.ecommercee.dto.product.CategoryResponseDTO;
 import com.projeto.ecommercee.dto.product.ProductCreateDto;
 import com.projeto.ecommercee.dto.product.ProductResponseDTO;
 import com.projeto.ecommercee.dto.product.ProductUpdateDTO;
-import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.entity.Product;
 import com.projeto.ecommercee.service.CategoryService;
 import com.projeto.ecommercee.service.ProductService;
@@ -15,10 +13,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
     private final ProductService productService;
     private final CategoryService categoryService;
@@ -29,11 +26,22 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDTO>> listProducts(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                                 @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                 @RequestParam(value = "sort", defaultValue = "name") String sort,
-                                                                 @RequestParam(value = "category", required = false) String category) {
-        return ResponseEntity.ok(productService.getProducts(page, size, sort, category));
+    public ResponseEntity<Page<ProductResponseDTO>> listAllProducts(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                    @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                    @RequestParam(value = "sort", defaultValue = "name") String sort,
+                                                                    @RequestParam(value = "category", required = false) String category) {
+        return ResponseEntity.ok(productService.listAllProducts(page, size, sort, category));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ProductResponseDTO>> searchProductsByName(@RequestParam(value = "name", defaultValue = "")String name,
+                                                                         @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                         @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                         @RequestParam(value = "sort", defaultValue = "name") String sort) {
+        if (name.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(productService.searchProductsByName(name, page, size, sort));
     }
 
     @PostMapping("/create")

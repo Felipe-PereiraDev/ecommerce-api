@@ -6,6 +6,7 @@ import com.projeto.ecommercee.dto.product.ProductUpdateDTO;
 import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.entity.Product;
 import com.projeto.ecommercee.exception.ProductAlreadyExistsException;
+import com.projeto.ecommercee.exception.ProductNotFoundException;
 import com.projeto.ecommercee.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -30,27 +31,35 @@ public class ProductService {
 
     public Product findById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+                () -> new ProductNotFoundException(id)
         );
     }
 
-
     public Product createProduct(ProductCreateDto data) {
-        Category category = categoryService.findById(data.categoryId());
-        Product newProduct = new Product(data, category);
         if (productRepository.existsByName(data.name())) {
             throw new ProductAlreadyExistsException();
         }
+        Category category = categoryService.findById(data.categoryId());
+        Product newProduct = new Product(data, category);
         return productRepository.save(newProduct);
     }
 
-    public Page<ProductResponseDTO> getProducts(int page, int size, String sort, String category) {
+    public Page<ProductResponseDTO> listAllProducts(int page, int size, String sort, String category) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
             if (StringUtils.hasText(category)) {
                  return productRepository.findByCategory_NameIgnoreCase(category, pageable).map(ProductResponseDTO::new);
             }
             return productRepository.findAll(pageable).map(ProductResponseDTO::new);
+        } catch (PropertyReferenceException | IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    public Page<ProductResponseDTO> searchProductsByName(String name, int page, int size, String sort) {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
+            return productRepository.findByNameContainingIgnoreCase(name.trim(), pageable).map(ProductResponseDTO::new);
         } catch (PropertyReferenceException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

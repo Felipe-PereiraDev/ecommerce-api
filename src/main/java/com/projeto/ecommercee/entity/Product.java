@@ -5,7 +5,10 @@ import com.projeto.ecommercee.dto.product.ProductUpdateDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,7 +17,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "products")
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
@@ -22,10 +25,10 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 80)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100  )
     private String description;
 
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
@@ -51,9 +54,23 @@ public class Product {
     public Product(ProductCreateDto data, Category category) {
         this.name = data.name();
         this.description = data.description();
-        this.price = data.price();
-        this.stockQuantity = data.stockQuantity();
+        this.changePrice(data.price());
+        this.changeStockQuantity(data.stockQuantity());
         this.category = category;
+    }
+
+    public void changePrice(BigDecimal value) {
+        if (value.compareTo(BigDecimal.valueOf(0)) < 0) {
+            throw new IllegalArgumentException("O preço não pode ser negativo.");
+        }
+        price = value;
+    }
+
+    public void changeStockQuantity(int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("A quantidade de estoque não pode ser negativa.");
+        }
+        stockQuantity = quantity;
     }
 
     @PrePersist
