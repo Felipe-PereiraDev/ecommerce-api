@@ -44,9 +44,8 @@ public class ProductService {
         return productRepository.save(newProduct);
     }
 
-    public Page<ProductResponseDTO> listAllProducts(int page, int size, String sort, String category) {
+    public Page<ProductResponseDTO> listAllProducts(Pageable pageable, String category) {
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
             if (StringUtils.hasText(category)) {
                  return productRepository.findByCategory_NameIgnoreCase(category, pageable).map(ProductResponseDTO::new);
             }
@@ -56,9 +55,8 @@ public class ProductService {
         }
     }
 
-    public Page<ProductResponseDTO> searchProductsByName(String name, int page, int size, String sort) {
+    public Page<ProductResponseDTO> searchProductsByName(Pageable pageable, String name) {
         try {
-            Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
             return productRepository.findByNameContainingIgnoreCase(name.trim(), pageable).map(ProductResponseDTO::new);
         } catch (PropertyReferenceException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

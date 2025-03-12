@@ -8,6 +8,9 @@ import com.projeto.ecommercee.entity.Product;
 import com.projeto.ecommercee.service.CategoryService;
 import com.projeto.ecommercee.service.ProductService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,22 +30,18 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponseDTO>> listAllProducts(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                                    @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                    @RequestParam(value = "sort", defaultValue = "name") String sort,
+    public ResponseEntity<Page<ProductResponseDTO>> listAllProducts(@PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                                                     @RequestParam(value = "category", required = false) String category) {
-        return ResponseEntity.ok(productService.listAllProducts(page, size, sort, category));
+        return ResponseEntity.ok(productService.listAllProducts(pageable, category));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<ProductResponseDTO>> searchProductsByName(@RequestParam(value = "name", defaultValue = "")String name,
-                                                                         @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                         @RequestParam(value = "size", defaultValue = "10") int size,
-                                                                         @RequestParam(value = "sort", defaultValue = "name") String sort) {
+    public ResponseEntity<Page<ProductResponseDTO>> searchProductsByName(@PageableDefault(size = 10, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                                                         @RequestParam(value = "name", defaultValue = "")String name) {
         if (name.trim().isEmpty()) {
             return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok(productService.searchProductsByName(name, page, size, sort));
+        return ResponseEntity.ok(productService.searchProductsByName(pageable, name));
     }
 
     @PostMapping
