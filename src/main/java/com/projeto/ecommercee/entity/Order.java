@@ -26,14 +26,14 @@ public class Order {
     private LocalDateTime orderDate;
 
 
-    @Column(name = "total_amount", nullable = false)
+    @Column(name = "total_amount", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double totalAmount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @ManyToOne
@@ -49,4 +49,9 @@ public class Order {
         this.totalAmount = totalAmount;
         this.user = user;
     }
+
+    public List<Product> getProducts() {
+        return orderProducts.stream().map(OrderProduct::getProduct).toList();
+    }
+
 }

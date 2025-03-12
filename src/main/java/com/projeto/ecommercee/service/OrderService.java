@@ -4,10 +4,10 @@ import com.projeto.ecommercee.dto.order.CreateOrderDTO;
 import com.projeto.ecommercee.dto.order.OrderProductResponse;
 import com.projeto.ecommercee.dto.order.OrderResponseDTO;
 import com.projeto.ecommercee.dto.order.ProductOrderDTO;
-import com.projeto.ecommercee.dto.product.ProductResponseDTO;
 import com.projeto.ecommercee.entity.*;
 import com.projeto.ecommercee.exception.InsufficientStockException;
 import com.projeto.ecommercee.exception.MissingAddressException;
+import com.projeto.ecommercee.exception.OrderNotFoundException;
 import com.projeto.ecommercee.repository.OrderProductRepository;
 import com.projeto.ecommercee.repository.OrderRepository;
 import jakarta.transaction.Transactional;
@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -41,6 +40,20 @@ public class OrderService {
         this.orderProductRepository = orderProductRepository;
     }
 
+    public OrderResponseDTO findById(String userId, Long orderId) {
+        userService.findById(userId);
+        var order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        return new OrderResponseDTO(order,listOrderProductsResponse(order.getOrderProducts()));
+    }
+
+
+    public List<OrderResponseDTO> findAllUserOrders(String userId) {
+        var user = userService.findById(userId);
+        return user.getOrders().stream()
+                .map(orderItem ->
+                        new OrderResponseDTO(orderItem, listOrderProductsResponse(orderItem.getOrderProducts())))
+                .toList();
+    }
 
     @Transactional
     public OrderResponseDTO createOrder(String userId, CreateOrderDTO data) {
@@ -61,7 +74,7 @@ public class OrderService {
 
         orderProductRepository.saveAll(listOrderProducts);
         userService.save(user);
-        return new OrderResponseDTO(createdOrder, listOrderProducts(listOrderProducts));
+        return new OrderResponseDTO(createdOrder, listOrderProductsResponse(listOrderProducts));
     }
 
     private Double getTotalAmount(List<OrderProduct> orderProducts) {
@@ -82,8 +95,7 @@ public class OrderService {
             if (orderProductMap.containsKey(product.getId())) {
                 orderProductMap.get(product.getId()).addQuantity(orderDTO.quantity());
             } else {
-                OrderProductId orderProductId = new OrderProductId(order.getId(), product.getId());
-                OrderProduct orderProduct = new OrderProduct(orderProductId, product, order, orderDTO.quantity());
+                OrderProduct orderProduct = new OrderProduct(product, order, orderDTO.quantity());
                 orderProductMap.put(product.getId(), orderProduct);
             }
         }
@@ -91,12 +103,8 @@ public class OrderService {
     }
 
 
-    private List<OrderProductResponse> listOrderProducts(List<OrderProduct> orderProducts) {
-        List<OrderProductResponse> list = new ArrayList<>();
-        for (OrderProduct oP : orderProducts) {
-            list.add(new OrderProductResponse(oP.getProduct(), oP.getQuantity()));
-        }
-        return list;
+    private List<OrderProductResponse> listOrderProductsResponse(List<OrderProduct> orderProducts) {
+        return orderProducts.stream().map(OrderProductResponse::new).toList();
     }
 
     private void checkStockAvailability(Product product, Long quantity) {
@@ -115,9 +123,11 @@ public class OrderService {
     public Page<OrderResponseDTO> findAll(int page, int size, String sort) {
         try {
             Pageable pageable = PageRequest.of(page, size, Sort.by(sort).descending());
-            return orderRepository.findAll(pageable).map(order -> new OrderResponseDTO(order, listOrderProducts(order.getOrderProducts())));
+            return orderRepository.findAll(pageable).map(order -> new OrderResponseDTO(order, listOrderProductsResponse(order.getOrderProducts())));
         } catch (PropertyReferenceException | IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+
 }

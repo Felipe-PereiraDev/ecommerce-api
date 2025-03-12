@@ -1,7 +1,8 @@
 package com.projeto.ecommercee.controller;
 
-import com.projeto.ecommercee.dto.product.CategoryCreateDTO;
-import com.projeto.ecommercee.dto.product.CategoryResponseDTO;
+import com.projeto.ecommercee.dto.category.CategoryCreateDTO;
+import com.projeto.ecommercee.dto.category.CategoryResponseDTO;
+import com.projeto.ecommercee.dto.category.CategoryUpdateDTO;
 import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,4 +30,21 @@ public class CategoryController {
         var category = categoryService.createCategory(data);
         return ResponseEntity.ok().body(new CategoryResponseDTO(category));
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@RequestBody @Validated CategoryUpdateDTO data,
+                                                              @PathVariable("id") Long id){
+
+        var category = categoryService.updateCategory(data, id);
+        return ResponseEntity.ok().body(new CategoryResponseDTO(category));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id){
+
+        categoryService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
 }

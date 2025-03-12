@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
@@ -44,12 +45,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchProductsByName(name, page, size, sort));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestBody @Validated ProductCreateDto productDto) {
+    @PostMapping
+    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Validated ProductCreateDto productDto) {
         Product createdProduct = productService.createProduct(productDto);
-        String location = "/products/" + createdProduct.getId();
-        return ResponseEntity.created(URI.create(location))
-                .body(new ProductResponseDTO(createdProduct));
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(createdProduct.getId()).toUri();
+        return ResponseEntity.created(uri).body(new ProductResponseDTO(createdProduct));
     }
 
     @PutMapping("{id}")

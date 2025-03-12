@@ -57,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/category").hasAuthority("SCOPE_" + ADMIN.name())
                         .requestMatchers(HttpMethod.PUT, "/api/v1/category").hasAuthority("SCOPE_" + ADMIN.name())
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/category").hasAuthority("SCOPE_" + ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/api/v1/order").hasAuthority("SCOPE_" + ADMIN.name())
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Isso permite que o H2 Console seja exibido corretamente em iframes.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

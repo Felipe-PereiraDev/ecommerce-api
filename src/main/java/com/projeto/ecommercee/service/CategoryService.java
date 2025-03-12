@@ -1,7 +1,8 @@
 package com.projeto.ecommercee.service;
 
 
-import com.projeto.ecommercee.dto.product.CategoryCreateDTO;
+import com.projeto.ecommercee.dto.category.CategoryCreateDTO;
+import com.projeto.ecommercee.dto.category.CategoryUpdateDTO;
 import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,21 @@ public class CategoryService {
     public Category createCategory(CategoryCreateDTO data) {
         Category category = new Category(data.name(), data.description());
         return categoryRepository.save(category);
+    }
+
+    public Category updateCategory(CategoryUpdateDTO data, Long id) {
+        var category = findById(id);
+        categoryRepository.findByNameIgnoreCase(data.name()).ifPresent(cat -> {
+            if (!cat.getId().equals(id)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma categoria com esse nome.");
+            }
+        });
+
+        category.update(data);
+        return categoryRepository.save(category);
+    }
+
+    public void deleteById(Long id) {
+        categoryRepository.deleteById(id);
     }
 }

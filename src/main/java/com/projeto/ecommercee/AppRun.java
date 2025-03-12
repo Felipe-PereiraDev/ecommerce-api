@@ -49,6 +49,7 @@ public class AppRun implements CommandLineRunner {
             admin.setUsername("admin");
             admin.setPassword(encoder.encode("admin"));
             admin.setEmail("admin@gmail.com");
+            admin.setPhone("1111111111");
             Set<Role> roles = new HashSet<>();
             roles.add(roleAdmin);
             roles.add(roleBasic);

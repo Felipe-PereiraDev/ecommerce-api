@@ -1,5 +1,6 @@
 package com.projeto.ecommercee.entity;
 
+import com.projeto.ecommercee.dto.category.CategoryUpdateDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -22,7 +24,7 @@ public class Category {
     @Column(unique = true, nullable = false, name = "name", length = 80)
     private String name;
 
-    @Column(name = "description", length = 100)
+    @Column(name = "description")
     private String description;
 
     @OneToMany(mappedBy = "category")
@@ -47,5 +49,28 @@ public class Category {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    public void setName(String name) {
+        if (name.length() < 3 || name.length() > 80) {
+            throw new IllegalArgumentException("O nome deve ter entre 3 e 80 caracteres.");
+        }
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        if (description.length() < 10 || description.length() > 255) {
+            throw new IllegalArgumentException("A descrição tem que ter entre 10 a 255 caracteres caracteres.");
+        }
+        this.description = description;
+    }
+
+    public void update(CategoryUpdateDTO data) {
+        if (data.name() != null) {
+            setName(data.name());
+        }
+        if (data.description() != null) {
+            setDescription(data.description());
+        }
     }
 }

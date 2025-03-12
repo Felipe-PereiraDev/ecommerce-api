@@ -3,45 +3,44 @@ package com.projeto.ecommercee.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
 @Entity
 @Table(name = "order_products")
-@Data
+@Getter
 @NoArgsConstructor
 public class OrderProduct {
+
     @EmbeddedId
     private OrderProductId id;
-
-    @ManyToOne
-    @MapsId("productId")
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
-    @ManyToOne
-    @MapsId("orderId")
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
 
     @Column(nullable = false)
     private Long quantity;
 
-    public OrderProduct(OrderProductId orderProductId, Product product, Order order, Long quantity) {
-        this.id = orderProductId;
-        this.product = product;
-        this.order = order;
+    @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
+    private BigDecimal price;
+
+    public OrderProduct(Product product, Order order, Long quantity) {
+        this.id = new OrderProductId(order, product);
         this.quantity = quantity;
+        this.price = product.getPrice();
     }
 
     public void addQuantity(Long quantity) {
         this.quantity += quantity;
     }
 
-    public OrderProduct(OrderProductId id) {
-        this.id = id;
+    public Product getProduct() {
+        return id.getProduct();
+    }
+
+    public Order getOrder() {
+        return id.getOrder();
     }
 
     @Override

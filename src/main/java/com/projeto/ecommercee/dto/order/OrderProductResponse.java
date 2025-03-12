@@ -2,9 +2,11 @@ package com.projeto.ecommercee.dto.order;
 
 
 
+import com.projeto.ecommercee.entity.OrderProduct;
 import com.projeto.ecommercee.entity.Product;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record OrderProductResponse(
         Long productId,
@@ -12,12 +14,14 @@ public record OrderProductResponse(
         Long quantity,
         BigDecimal price
 ) {
-    public OrderProductResponse(Product product, Long qtd) {
+    public OrderProductResponse(OrderProduct orderProduct) {
         this(
-                product.getId(),
-                product.getName(),
-                qtd,
-                product.getPrice()
+                orderProduct.getProduct().getId(),
+                orderProduct.getProduct().getName(),
+                orderProduct.getQuantity(),
+                orderProduct.getPrice()
         );
     }
+
+
 }

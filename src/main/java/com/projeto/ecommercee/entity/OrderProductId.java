@@ -2,49 +2,45 @@
 package com.projeto.ecommercee.entity;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.util.Objects;
 import java.util.UUID;
 
 @Embeddable
 public class OrderProductId {
-    private Long orderId;
-    private Long productId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     public OrderProductId() {
     }
 
-    public OrderProductId(Long orderId, Long productId) {
-        this.orderId = orderId;
-        this.productId = productId;
+    public OrderProductId(Order order, Product product) {
+        this.order = order;
+        this.product = product;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderProductId that = (OrderProductId) o;
-        return Objects.equals(orderId, that.orderId) && Objects.equals(productId, that.productId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderId, productId);
-    }
 }

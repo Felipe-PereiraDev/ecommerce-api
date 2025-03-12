@@ -64,6 +64,12 @@ public class GlobalExceptionHandler {
         return builderResponseException(HttpStatus.NOT_FOUND, "Not Found", ex, request);
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleOrderNotFoundException(OrderNotFoundException ex,
+                                                                      HttpServletRequest request) {
+        return builderResponseException(HttpStatus.NOT_FOUND, "Not Found", ex, request);
+    }
+
     @ExceptionHandler(InvalidUsernameOrPasswordException.class)
     public ResponseEntity<ErrorResponse> handleInvalidUsernameOrPasswordException(InvalidUsernameOrPasswordException ex,
                                                                         HttpServletRequest request) {

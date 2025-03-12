@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("{id}")
     @PreAuthorize("@authenticationService.hasAccessPermission(#id)")
-    public ResponseEntity<UserResponseDTO> getUser(@PathVariable("id") String id) {
+    public ResponseEntity<UserResponseDTO> findUserById(@PathVariable("id") String id) {
         User user = userService.findById(id);
         return ResponseEntity.ok(new UserResponseDTO(user));
 
@@ -36,7 +36,7 @@ public class UserController {
 
 
     @GetMapping()
-    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> listAllUsers() {
         List<UserResponseDTO> users  = userService.findAll().stream()
                 .map(UserResponseDTO::new).sorted(Comparator.comparing(UserResponseDTO::username)).toList();
         return ResponseEntity.ok(users);

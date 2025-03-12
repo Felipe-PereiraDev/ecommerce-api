@@ -28,7 +28,7 @@ public class Product {
     @Column(unique = true, nullable = false, length = 80)
     private String name;
 
-    @Column(nullable = false, length = 100  )
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2)")
@@ -47,7 +47,7 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
 
@@ -100,5 +100,9 @@ public class Product {
         if (category != null) {
             this.category = category;
         }
+    }
+
+    public List<Order> getOrders() {
+        return orderProducts.stream().map(OrderProduct::getOrder).toList();
     }
 }

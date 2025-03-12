@@ -1,4 +1,4 @@
-package com.projeto.ecommercee.dto.product;
+package com.projeto.ecommercee.dto.category;
 
 
 import com.projeto.ecommercee.entity.Category;
