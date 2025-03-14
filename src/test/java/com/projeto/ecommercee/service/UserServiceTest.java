@@ -10,19 +10,13 @@ import com.projeto.ecommercee.repository.RoleRepository;
 import com.projeto.ecommercee.repository.UserRepository;
 import com.projeto.ecommercee.repository.ViaCepService;
 import feign.FeignException;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
@@ -59,6 +53,7 @@ class UserServiceTest {
 
     private static final String USERNAME = "felipe";
     private static final String EMAIL = "felipe";
+    private static final String UUID_USER = "4441ffc4-254c-43b0-9862-a0bb701d9a4c";
 
     private User user;
 
@@ -69,7 +64,6 @@ class UserServiceTest {
         user = new User();
         user.setUsername(USERNAME);
         user.setEmail(EMAIL);
-
     }
 
 
@@ -131,12 +125,12 @@ class UserServiceTest {
         ViaCepDTO viaCepDTO = new ViaCepDTO("128828", "Jorge Teixeira", "Amazonas", "Manaus");
         AddressCreateDTO addressRequest = new AddressCreateDTO("128828", "Amazonas", "Manaus", "nandum");
 
-        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user));
+        when(userRepository.findById(UUID.fromString(UUID_USER))).thenReturn(Optional.of(user));
         when(viaCepService.getAddress("128828")).thenReturn(viaCepDTO);
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         // Act
-        userService.addAddress(USERNAME, addressRequest);
+        userService.addAddress(UUID_USER, addressRequest);
 
         // Assert (Validação)
 
@@ -153,11 +147,11 @@ class UserServiceTest {
 
         AddressCreateDTO addressRequest = new AddressCreateDTO("128828", "Amazonas", "Manaus", "nandum");
 
-        when(userRepository.findByUsername(USERNAME)).thenReturn(Optional.of(user));
+        when(userRepository.findById(UUID.fromString(UUID_USER))).thenReturn(Optional.of(user));
         when(viaCepService.getAddress(addressRequest.zipCode())).thenThrow(FeignException.BadRequest.class);
         // Assert (Validação)
 
-        assertThrows(ResponseStatusException.class,() -> userService.addAddress(USERNAME, addressRequest));
+        assertThrows(ResponseStatusException.class,() -> userService.addAddress(UUID_USER, addressRequest));
 
     }
 
