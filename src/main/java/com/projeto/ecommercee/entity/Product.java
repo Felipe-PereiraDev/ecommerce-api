@@ -47,7 +47,7 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "id.product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.product")
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
 

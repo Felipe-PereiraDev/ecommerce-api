@@ -4,7 +4,10 @@ package com.projeto.ecommercee.service;
 import com.projeto.ecommercee.dto.category.CategoryCreateDTO;
 import com.projeto.ecommercee.dto.category.CategoryUpdateDTO;
 import com.projeto.ecommercee.entity.Category;
+import com.projeto.ecommercee.exception.DatabaseException;
 import com.projeto.ecommercee.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,7 +50,15 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+
     public void deleteById(Long id) {
-        categoryRepository.deleteById(id);
+        if (!categoryRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        try {
+            categoryRepository.deleteById(id);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
 }

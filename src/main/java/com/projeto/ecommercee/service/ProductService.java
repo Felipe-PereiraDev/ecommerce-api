@@ -5,10 +5,12 @@ import com.projeto.ecommercee.dto.product.ProductResponseDTO;
 import com.projeto.ecommercee.dto.product.ProductUpdateDTO;
 import com.projeto.ecommercee.entity.Category;
 import com.projeto.ecommercee.entity.Product;
+import com.projeto.ecommercee.exception.DatabaseException;
 import com.projeto.ecommercee.exception.ProductAlreadyExistsException;
 import com.projeto.ecommercee.exception.ProductNotFoundException;
 import com.projeto.ecommercee.repository.ProductRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,8 +66,14 @@ public class ProductService {
     }
 
     public void deleteById(Long id) {
-        Product product = findById(id);
-        productRepository.delete(product);
+        if (!productRepository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
+        try {
+            productRepository.deleteById(id);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
 
     @Transactional

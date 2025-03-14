@@ -68,8 +68,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void addAddress(String username, AddressCreateDTO addressDTO){
-        User user = findByUsername(username);
+    public void addAddress(String userId, AddressCreateDTO addressDTO){
+        User user = findById(userId);
 
         try {
             ViaCepDTO viaCepDTO = viaCepService.getAddress(addressDTO.zipCode().replace("-", ""));

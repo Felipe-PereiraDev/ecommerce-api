@@ -33,7 +33,7 @@ public class Order {
     @Column(nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id.order", fetch = FetchType.LAZY)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     @ManyToOne

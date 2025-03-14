@@ -6,6 +6,11 @@ import com.projeto.ecommercee.dto.user.UserResponseDTO;
 import com.projeto.ecommercee.entity.User;
 import com.projeto.ecommercee.service.AuthenticationService;
 import com.projeto.ecommercee.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
+@Tag(name = "User", description = "Endpoints para gerenciar usuários")
 public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
@@ -26,6 +32,16 @@ public class UserController {
         this.authenticationService = authenticationService;
     }
 
+    @Operation(summary = "Criar um novo usuário", description = "Cadastra um novo usuário no sistema.",
+            responses = @ApiResponse(responseCode = "201", description = "Recurso criado com sucesso"))
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Validated UserCreateDTO data) {
+        var createdUser = userService.createUser(data);
+        String url = "/user/" + createdUser.getId().toString();
+        return ResponseEntity.created(URI.create(url)).body(new UserResponseDTO(createdUser));
+    }
+
+    @Operation(summary = "Buscar usuário", description = "Busca um usuário pelo id.")
     @GetMapping("{id}")
     @PreAuthorize("@authenticationService.hasAccessPermission(#id)")
     public ResponseEntity<UserResponseDTO> findUserById(@PathVariable("id") String id) {
@@ -34,7 +50,7 @@ public class UserController {
 
     }
 
-
+    @Operation(summary = "Listar usuários", description = "Retorna a lista todos os usuários do banco de dados. Apenas usuários com perfil ADMIN podem acessar este recurso")
     @GetMapping()
     public ResponseEntity<List<UserResponseDTO>> listAllUsers() {
         List<UserResponseDTO> users  = userService.findAll().stream()
@@ -42,17 +58,17 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody @Validated UserCreateDTO data) {
-        var createdUser = userService.createUser(data);
-        String url = "/user/" + createdUser.getId().toString();
-        return ResponseEntity.created(URI.create(url)).body(new UserResponseDTO(createdUser));
-    }
 
-    @PostMapping("/{username}/address")
-    public ResponseEntity<?> addAddress(@PathVariable("username") String username,
+    @Operation(summary = "Adicionar endereço", description = "Adiciona um novo endereço ao usuário especificado pelo ID. O endereço deve ser enviado no corpo da requisição.",
+            responses = {
+            @ApiResponse(responseCode = "200", description = "Endereço cadastrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado")
+    })
+    @PostMapping("/{userId}/address")
+    @PreAuthorize("@authenticationService.hasAccessPermission(#id)")
+    public ResponseEntity<?> addAddress(@PathVariable("userId") String userId,
                                         @RequestBody AddressCreateDTO data) {
-        userService.addAddress(username, data);
+        userService.addAddress(userId, data);
         return ResponseEntity.ok().build();
     }
 }
