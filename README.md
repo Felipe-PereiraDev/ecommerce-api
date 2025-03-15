@@ -18,8 +18,35 @@ Esta API permite gerenciar usuários, produtos, categorias e pedidos de um siste
 - Injeção de Dependências
 - Uso de exceptions personalizadas para respostas padronizadas e claras.
 - Geração automática do Swagger com a OpenAPI 3
+- Teste Unitários com o framework JUnit 5, com o suporte do Mockito para simulação de dependências
 
-[//]: # (- Teste Unitários com o framework JUnit 5, com o suporte do Mockito para simulação de dependências)
+---
+## Como Executar
+
+1. Clonar repositório git
+```
+$ git clone https://github.com/Felipe-PereiraDev/ecommerce-api.git
+````
+2. Entrar na pasta raiz do projeto 
+
+```
+$ cd ecommerce-api
+```
+3. Gerar o arquivo JAR
+```
+$ mvn clean package
+```
+4. Executar a aplicação:
+```
+$ java -jar target/ecommerce-0.0.1-SNAPSHOT.jar
+```
+### Versões ultilizadas
+- Java: 21.0.4
+- Maven: 3.9.8
+
+A API poderá ser acessada em [localhost:8080](http://localhost:8080).
+
+O Swagger poderá ser visualizado em [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
 
 ---
 ## Autenticação e Autorização
