@@ -1,5 +1,6 @@
 package com.projeto.ecommerce.controller;
 
+import com.projeto.ecommerce.controller.docs.CategoryApi;
 import com.projeto.ecommerce.dto.category.CategoryCreateDTO;
 import com.projeto.ecommerce.dto.category.CategoryResponseDTO;
 import com.projeto.ecommerce.dto.category.CategoryUpdateDTO;
@@ -14,7 +15,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/category")
-public class CategoryController {
+public class CategoryController implements CategoryApi {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -40,7 +42,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteCategory(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteCategory(@PathVariable("id") Long id){
 
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();
